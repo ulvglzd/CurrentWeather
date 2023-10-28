@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -14,13 +16,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorObject> handleConstraintViolationException(ConstraintViolationException ex) {
         ErrorObject errorObject = new ErrorObject();
+        StringBuilder errorMessages = new StringBuilder();
 
-        //extracting the error message from the exception and setting it to the error object
         ex.getConstraintViolations().forEach(constraintViolation -> {
-            errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            errorObject.setMessage(constraintViolation.getMessage());
-            errorObject.setTimestamp(LocalDateTime.now());
+            errorMessages.append(constraintViolation.getMessage()).append("\n");
         });
+
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setMessage(errorMessages.toString().trim());
+        errorObject.setTimestamp(LocalDateTime.now());
 
         return ResponseEntity.badRequest().body(errorObject);
     }

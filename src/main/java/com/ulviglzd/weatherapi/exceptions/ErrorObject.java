@@ -5,13 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class ErrorObject {
-    @JsonProperty("code")
+
     private Integer statusCode;
-    @JsonProperty("info")
     private String message;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private LocalDateTime timestamp;
+
 }

@@ -16,9 +16,4 @@ public class WeatherResponse {
     private boolean success;
     private ErrorObject error;
 
-
-//    @Override
-//    public boolean isSuccessful() {
-//        return true;
-//    }
 }

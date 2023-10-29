@@ -1,4 +1,4 @@
-package com.ulviglzd.weatherapi.dto;
+package com.ulviglzd.weatherapi.dto.weatherDto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

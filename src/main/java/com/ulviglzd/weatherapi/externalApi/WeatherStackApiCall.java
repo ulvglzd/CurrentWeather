@@ -1,6 +1,6 @@
 package com.ulviglzd.weatherapi.externalApi;
 
-import com.ulviglzd.weatherapi.dto.WeatherResponse;
+import com.ulviglzd.weatherapi.dto.weatherDto.WeatherResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

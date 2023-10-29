@@ -1,6 +1,6 @@
 package com.ulviglzd.weatherapi.repository;
 
-import com.ulviglzd.weatherapi.entity.WeatherEntity;
+import com.ulviglzd.weatherapi.entity.weather.WeatherEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

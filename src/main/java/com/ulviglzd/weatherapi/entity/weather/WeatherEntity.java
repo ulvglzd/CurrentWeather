@@ -1,13 +1,11 @@
-package com.ulviglzd.weatherapi.entity;
+package com.ulviglzd.weatherapi.entity.weather;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,7 +19,9 @@ import java.util.UUID;
 public class WeatherEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "hibernate-uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @Column(name = "uuid", unique = true)
     private UUID id;
     private String requestedCityName;
     private String cityName;

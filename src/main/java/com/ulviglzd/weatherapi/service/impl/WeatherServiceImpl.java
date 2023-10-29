@@ -1,8 +1,8 @@
 package com.ulviglzd.weatherapi.service.impl;
 
-import com.ulviglzd.weatherapi.dto.WeatherDTO;
-import com.ulviglzd.weatherapi.dto.WeatherResponse;
-import com.ulviglzd.weatherapi.entity.WeatherEntity;
+import com.ulviglzd.weatherapi.dto.weatherDto.WeatherDTO;
+import com.ulviglzd.weatherapi.dto.weatherDto.WeatherResponse;
+import com.ulviglzd.weatherapi.entity.weather.WeatherEntity;
 import com.ulviglzd.weatherapi.exceptions.NoSuchCityException;
 import com.ulviglzd.weatherapi.externalApi.WeatherStackApiCall;
 import com.ulviglzd.weatherapi.helpers.formatters.DateAndTimeFormatter;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Optional;

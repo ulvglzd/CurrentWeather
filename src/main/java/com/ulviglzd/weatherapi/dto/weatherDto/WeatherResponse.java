@@ -1,10 +1,7 @@
-package com.ulviglzd.weatherapi.dto;
+package com.ulviglzd.weatherapi.dto.weatherDto;
 
 import com.ulviglzd.weatherapi.exceptions.ErrorObject;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.util.List;
 
 @Data
 public class WeatherResponse {

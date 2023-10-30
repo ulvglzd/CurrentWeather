@@ -28,7 +28,7 @@ public class SwaggerConfiguration {
 
 
         Info info = new Info()
-                .title("Test")
+                .title("Current Weather API")
                 .version("1.0")
                 .contact(contact)
                 .description("OpenAPI documentation");

@@ -21,6 +21,5 @@ public class RegisterRequest {
     private String email;
     @ValidPassword
     private String password;
-    private Role role;
 
 }

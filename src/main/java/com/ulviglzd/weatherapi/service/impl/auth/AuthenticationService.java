@@ -6,6 +6,7 @@ import com.ulviglzd.weatherapi.dto.authDto.AuthenticationResponse;
 import com.ulviglzd.weatherapi.dto.authDto.RegisterRequest;
 import com.ulviglzd.weatherapi.entity.token.Token;
 import com.ulviglzd.weatherapi.entity.token.TokenType;
+import com.ulviglzd.weatherapi.entity.user.Role;
 import com.ulviglzd.weatherapi.entity.user.User;
 import com.ulviglzd.weatherapi.exceptions.EmailAlreadyExistsException;
 import com.ulviglzd.weatherapi.exceptions.UserNameAlreadyExistsException;
@@ -36,7 +37,7 @@ public class AuthenticationService {
                 .userName(request.getUserName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .role(Role.USER)
                 .build();
 
         boolean isEmailExists = repository.existsByEmail(request.getEmail());

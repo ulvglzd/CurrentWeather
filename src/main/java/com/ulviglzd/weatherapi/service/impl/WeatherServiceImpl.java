@@ -4,6 +4,7 @@ import com.ulviglzd.weatherapi.dto.weatherDto.WeatherDTO;
 import com.ulviglzd.weatherapi.dto.weatherDto.WeatherResponse;
 import com.ulviglzd.weatherapi.entity.weather.WeatherEntity;
 import com.ulviglzd.weatherapi.exceptions.NoSuchCityException;
+import com.ulviglzd.weatherapi.exceptions.UserNameAlreadyExistsException;
 import com.ulviglzd.weatherapi.externalApi.WeatherStackApiCall;
 import com.ulviglzd.weatherapi.helpers.formatters.DateAndTimeFormatter;
 import com.ulviglzd.weatherapi.repository.UserRepository;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -59,23 +61,26 @@ public class WeatherServiceImpl implements WeatherService {
         Optional<WeatherEntity> weatherEntity = weatherRepository.findByRequestedCityName(cityName);
         WeatherDTO weatherDTO = null;
 
+        //checking if weather data is present in database and if it is expired
         if (weatherEntity.isPresent() && !isWeatherDataExpired(weatherEntity.get())) {
             log.info("Weather data found in database for city: " + cityName);
             weatherDTO = convertWeatherEntityToWeatherDTO(weatherEntity.get());
         }
+        //if weather data is present in database but expired, deleting it and getting new data from api
         else if (weatherEntity.isPresent() && isWeatherDataExpired(weatherEntity.get())) {
             log.info("Weather data expired in database for city: " + cityName);
             weatherRepository.delete(weatherEntity.get());
             WeatherEntity updatedWeatherDataFromApi = weatherRepository.save(generateWeatherEntity(cityName));
             weatherDTO = convertWeatherEntityToWeatherDTO(updatedWeatherDataFromApi);
         }
+        //if weather data is not present in database, getting new data from api
         else  {
             log.info("Weather data not found in database for city: " + cityName);
             WeatherEntity updatedWeatherDataFromApi = weatherRepository.save(generateWeatherEntity(cityName));
             weatherDTO = convertWeatherEntityToWeatherDTO(updatedWeatherDataFromApi);
         }
 
-        //Sending mail to user
+        //Sending mail to user (logging for mail sending is in MailSendingService)
         mailSendingService.sendMail(getUserEmail(), "Weather info for " + cityName,
                 convertWeatherDTOtoMailText(weatherDTO));
 
@@ -110,22 +115,26 @@ public class WeatherServiceImpl implements WeatherService {
         return weatherEntity.getUpdateTime().isBefore(LocalDateTime.now().minusMinutes(40));
     }
 
+    //Converting WeatherEntity to WeatherDTO using modelMapper
     private WeatherDTO convertWeatherEntityToWeatherDTO(WeatherEntity weatherEntity) {
         return modelMapper.map(weatherEntity, WeatherDTO.class);
     }
 
+    //Getting logged-in user email from security context
     private String getUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //checking if user is authenticated
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails principal = (UserDetails) authentication.getPrincipal();
             String username = principal.getUsername();
             var user = userRepository.findByUserName(username)
-                    .orElseThrow();
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             return user.getEmail();
         }
         return "Authentication failed";
     }
 
+    //Converting WeatherDTO to mail text
     private String convertWeatherDTOtoMailText(WeatherDTO weatherDTO) {
         if (weatherDTO != null) {
             return "City: " + weatherDTO.getCityName() + "\n" +

@@ -16,9 +16,12 @@ public class DateAndTimeFormatter implements Formatter<LocalDateTime> {
         return LocalDateTime.parse(text, formatter);
     }
 
+
+
         @Override
         public String print(LocalDateTime object, Locale locale) {
-            return object.getHour() + object.getDayOfMonth() + " " + object.getMonth() + " " + object.getYear();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            return  object.format(formatter);
         }
 
 }

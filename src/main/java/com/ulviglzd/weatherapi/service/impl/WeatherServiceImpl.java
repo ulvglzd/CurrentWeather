@@ -6,6 +6,7 @@ import com.ulviglzd.weatherapi.entity.weather.WeatherEntity;
 import com.ulviglzd.weatherapi.exceptions.NoSuchCityException;
 import com.ulviglzd.weatherapi.externalApi.WeatherStackApiCall;
 import com.ulviglzd.weatherapi.helpers.formatters.DateAndTimeFormatter;
+import com.ulviglzd.weatherapi.repository.UserRepository;
 import com.ulviglzd.weatherapi.repository.WeatherRepository;
 import com.ulviglzd.weatherapi.service.WeatherService;
 import org.modelmapper.ModelMapper;
@@ -13,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,17 +34,20 @@ public class WeatherServiceImpl implements WeatherService {
     @Value("${weather.api.key}")
     private String weatherApiKey;
 
-    @Autowired
     private DateAndTimeFormatter dateAndTimeFormatter;
 
     private static final Logger log = LoggerFactory.getLogger(WeatherService.class);
+    private final MailSendingService mailSendingService;
+    private final UserRepository userRepository;
 
 
 
     public WeatherServiceImpl(WeatherStackApiCall apiCall,
-                              WeatherRepository weatherRepository) {
+                              WeatherRepository weatherRepository, MailSendingService mailSendingService, UserRepository userRepository) {
         this.apiCall = apiCall;
         this.weatherRepository = weatherRepository;
+        this.mailSendingService = mailSendingService;
+        this.userRepository = userRepository;
     }
 
 
@@ -49,24 +56,32 @@ public class WeatherServiceImpl implements WeatherService {
 
         //getting weather data from database
         Optional<WeatherEntity> weatherEntity = weatherRepository.findByRequestedCityName(cityName);
+        WeatherDTO weatherDTO = null;
 
         if (weatherEntity.isPresent() && !isWeatherDataExpired(weatherEntity.get())) {
             log.info("Weather data found in database for city: " + cityName);
-            return convertWeatherEntityToWeatherDTO(weatherEntity.get());
+            weatherDTO = convertWeatherEntityToWeatherDTO(weatherEntity.get());
         }
         else if (weatherEntity.isPresent() && isWeatherDataExpired(weatherEntity.get())) {
             log.info("Weather data expired in database for city: " + cityName);
             weatherRepository.delete(weatherEntity.get());
             WeatherEntity updatedWeatherDataFromApi = weatherRepository.save(generateWeatherEntity(cityName));
-            return convertWeatherEntityToWeatherDTO(updatedWeatherDataFromApi);
+            weatherDTO = convertWeatherEntityToWeatherDTO(updatedWeatherDataFromApi);
         }
         else  {
             log.info("Weather data not found in database for city: " + cityName);
             WeatherEntity updatedWeatherDataFromApi = weatherRepository.save(generateWeatherEntity(cityName));
-            return convertWeatherEntityToWeatherDTO(updatedWeatherDataFromApi);
+            weatherDTO = convertWeatherEntityToWeatherDTO(updatedWeatherDataFromApi);
         }
 
+        //Sending mail to user
+        mailSendingService.sendMail(getUserEmail(), "Weather info for " + cityName,
+                convertWeatherDTOtoMailText(weatherDTO));
+
+        return weatherDTO;
+
     }
+
 
     private WeatherEntity generateWeatherEntity(String cityName) {
 
@@ -96,6 +111,28 @@ public class WeatherServiceImpl implements WeatherService {
 
     private WeatherDTO convertWeatherEntityToWeatherDTO(WeatherEntity weatherEntity) {
         return modelMapper.map(weatherEntity, WeatherDTO.class);
+    }
+
+    private String getUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails principal = (UserDetails) authentication.getPrincipal();
+            String username = principal.getUsername();
+            var user = userRepository.findByUserName(username)
+                    .orElseThrow();
+            return user.getEmail();
+        }
+        return "Authentication failed";
+    }
+
+    private String convertWeatherDTOtoMailText(WeatherDTO weatherDTO) {
+        if (weatherDTO != null) {
+            return "City: " + weatherDTO.getCityName() + "\n" +
+                    "Country: " + weatherDTO.getCountry() + "\n" +
+                    "Temperature: " + weatherDTO.getTemperature() + "\n" +
+                    "Local time: " + dateAndTimeFormatter.print(weatherDTO.getUpdateTime(), Locale.getDefault());
+        }
+        return "No weather data found";
     }
 
 

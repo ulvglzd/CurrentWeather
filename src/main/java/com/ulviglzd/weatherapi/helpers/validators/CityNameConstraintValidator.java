@@ -5,7 +5,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CityNameValidator implements ConstraintValidator<ValidCityName, String> {
+public class CityNameConstraintValidator implements ConstraintValidator<ValidCityName, String> {
     @Override
     public void initialize(ValidCityName constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);

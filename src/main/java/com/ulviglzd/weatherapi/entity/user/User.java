@@ -24,9 +24,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
-    private String username;
-    private String firstname;
-    private String lastname;
+    @Column(unique = true)
+    private String userName;
+    private String firstName;
+    private String lastName;
+    @Column(unique = true)
     private String email;
     private String password;
     private String userImg;
@@ -49,7 +51,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return userName;
     }
 
     @Override

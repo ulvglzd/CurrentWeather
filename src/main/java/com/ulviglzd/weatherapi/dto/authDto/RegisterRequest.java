@@ -1,10 +1,11 @@
 package com.ulviglzd.weatherapi.dto.authDto;
 
 import com.ulviglzd.weatherapi.entity.user.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.ulviglzd.weatherapi.helpers.validators.ValidPassword;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
 
 @Data
 @Builder
@@ -12,9 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegisterRequest {
 
-    private String firstname;
-    private String lastname;
+
+    @NotBlank(message = "Username is required")
+    private String userName;
+    @Email(message = "Email should be valid")
+    @NotEmpty(message = "Email is required")
     private String email;
+    @ValidPassword
     private String password;
     private Role role;
+
 }

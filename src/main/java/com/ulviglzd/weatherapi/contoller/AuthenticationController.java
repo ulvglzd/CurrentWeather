@@ -3,9 +3,10 @@ package com.ulviglzd.weatherapi.contoller;
 import com.ulviglzd.weatherapi.dto.authDto.AuthenticationRequest;
 import com.ulviglzd.weatherapi.dto.authDto.AuthenticationResponse;
 import com.ulviglzd.weatherapi.dto.authDto.RegisterRequest;
-import com.ulviglzd.weatherapi.service.authService.AuthenticationService;
+import com.ulviglzd.weatherapi.service.impl.auth.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,12 +25,12 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
+            @RequestBody @Valid RegisterRequest request
     ) {
         return ResponseEntity.ok(service.register(request));
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ) {

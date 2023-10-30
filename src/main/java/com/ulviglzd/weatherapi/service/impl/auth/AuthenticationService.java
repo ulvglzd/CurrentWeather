@@ -1,4 +1,4 @@
-package com.ulviglzd.weatherapi.service.authService;
+package com.ulviglzd.weatherapi.service.impl.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ulviglzd.weatherapi.dto.authDto.AuthenticationRequest;
@@ -7,6 +7,8 @@ import com.ulviglzd.weatherapi.dto.authDto.RegisterRequest;
 import com.ulviglzd.weatherapi.entity.token.Token;
 import com.ulviglzd.weatherapi.entity.token.TokenType;
 import com.ulviglzd.weatherapi.entity.user.User;
+import com.ulviglzd.weatherapi.exceptions.EmailAlreadyExistsException;
+import com.ulviglzd.weatherapi.exceptions.UserNameAlreadyExistsException;
 import com.ulviglzd.weatherapi.repository.TokenRepository;
 import com.ulviglzd.weatherapi.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,12 +33,23 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
+                .userName(request.getUserName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .build();
+
+        boolean isEmailExists = repository.existsByEmail(request.getEmail());
+        boolean isUserNameExists = repository.existsByUserName(request.getUserName());
+
+        //ensure that email and username are unique
+        if (isEmailExists) {
+            throw new EmailAlreadyExistsException("Email already exists");
+        }
+        if (isUserNameExists) {
+            throw new UserNameAlreadyExistsException("Username already exists");
+        }
+
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
@@ -50,11 +63,11 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        request.getUserName(),
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail())
+        var user = repository.findByUserName(request.getUserName())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
@@ -94,14 +107,14 @@ public class AuthenticationService {
     ) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
-        final String userEmail;
+        final String userName;
         if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
             return;
         }
         refreshToken = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(refreshToken);
-        if (userEmail != null) {
-            var user = this.repository.findByEmail(userEmail)
+        userName = jwtService.extractUsername(refreshToken);
+        if (userName != null) {
+            var user = this.repository.findByUserName(userName)
                     .orElseThrow();
             if (jwtService.isTokenValid(refreshToken, user)) {
                 var accessToken = jwtService.generateToken(user);

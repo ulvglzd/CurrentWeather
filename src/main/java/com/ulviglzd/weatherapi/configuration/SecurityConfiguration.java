@@ -25,6 +25,7 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("api/v1/auth/**").permitAll()
+                                .requestMatchers(permitSwagger).permitAll()
 //                                        .requestMatchers("/v1/user").hasRole("USER")
 //                                        .requestMatchers("/v1/admin").hasRole("ADMIN")
                                 .anyRequest().authenticated());
@@ -33,4 +34,18 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
+
+    public static String[] permitSwagger = {
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/swagger-ui.html"
+    };
 }

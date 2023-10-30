@@ -34,6 +34,7 @@ public class WeatherServiceImpl implements WeatherService {
     @Value("${weather.api.key}")
     private String weatherApiKey;
 
+    @Autowired
     private DateAndTimeFormatter dateAndTimeFormatter;
 
     private static final Logger log = LoggerFactory.getLogger(WeatherService.class);

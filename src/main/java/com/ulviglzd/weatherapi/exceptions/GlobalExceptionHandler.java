@@ -82,6 +82,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorObject);
     }
 
+    @ExceptionHandler(UnableToUploadFileException.class)
+    public ResponseEntity<ErrorObject> handleUnableToUploadFileException(UnableToUploadFileException ex) {
+        ErrorObject errorObject = new ErrorObject();
+
+        //extracting the error message from the exception and setting it to the error object
+        errorObject.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimestamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorObject);
+    }
+
 
 
 

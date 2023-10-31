@@ -1,5 +1,6 @@
 package com.ulviglzd.weatherapi.scheduler;
 
+import com.ulviglzd.weatherapi.service.DataCleaningService;
 import com.ulviglzd.weatherapi.service.impl.DataCleaningServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,10 +9,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DataCleaningScheduler {
-    private final DataCleaningServiceImpl dataCleaningServiceImpl;
+    private final DataCleaningService dataCleaningService;
 
-    public DataCleaningScheduler(DataCleaningServiceImpl dataCleaningServiceImpl) {
-        this.dataCleaningServiceImpl = dataCleaningServiceImpl;
+    public DataCleaningScheduler(DataCleaningService dataCleaningService) {
+        this.dataCleaningService = dataCleaningService;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(DataCleaningScheduler.class);
@@ -21,7 +22,7 @@ public class DataCleaningScheduler {
     public void scheduleDataCleanup() {
         logger.info("Data cleaning started.");
         try {
-            dataCleaningServiceImpl.eraseOldData();
+            dataCleaningService.eraseOldData();
             logger.info("Data cleaning completed successfully.");
         } catch (Exception e) {
             logger.error("Data cleaning failed: " + e.getMessage(), e);

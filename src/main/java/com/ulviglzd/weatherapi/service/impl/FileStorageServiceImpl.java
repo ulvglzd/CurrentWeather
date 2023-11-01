@@ -1,6 +1,7 @@
 package com.ulviglzd.weatherapi.service.impl;
 
 import com.ulviglzd.weatherapi.exceptions.UnableToUploadFileException;
+import com.ulviglzd.weatherapi.exceptions.UnsupportedFileFormatException;
 import com.ulviglzd.weatherapi.helpers.formatters.CustomDateFormatter;
 import com.ulviglzd.weatherapi.helpers.validators.AllowedFileTypes;
 import com.ulviglzd.weatherapi.service.FileStorageService;
@@ -34,7 +35,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         //Check if filetype is allowed
         String contentType = imageFile.getContentType();
         if(!AllowedFileTypes.isImageAllowed(contentType)){
-            throw new UnableToUploadFileException("Invalid file format. Only PNG, JPEG, and JPG images are allowed.");
+            throw new UnsupportedFileFormatException("Invalid file format. Only PNG, JPEG, and JPG images are allowed.");
         }
 
         try {

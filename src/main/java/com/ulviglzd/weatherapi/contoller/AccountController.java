@@ -1,13 +1,11 @@
 package com.ulviglzd.weatherapi.contoller;
 
 import com.ulviglzd.weatherapi.entity.user.User;
-import com.ulviglzd.weatherapi.repository.UserRepository;
 import com.ulviglzd.weatherapi.service.AccountService;
 import com.ulviglzd.weatherapi.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +28,7 @@ public class AccountController {
         User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = user.getUsername();
 
-        String filePath = fileStorageService.uploadFile(file);
+        String filePath = fileStorageService.uploadUserProfileImage(file, username);
         accountService.uploadAvatar(filePath, username);
 
         return ResponseEntity.ok().build();

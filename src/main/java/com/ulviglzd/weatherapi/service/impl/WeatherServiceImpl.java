@@ -4,7 +4,6 @@ import com.ulviglzd.weatherapi.dto.weatherDto.WeatherDTO;
 import com.ulviglzd.weatherapi.dto.weatherDto.WeatherResponse;
 import com.ulviglzd.weatherapi.entity.weather.WeatherEntity;
 import com.ulviglzd.weatherapi.exceptions.NoSuchCityException;
-import com.ulviglzd.weatherapi.exceptions.UserNameAlreadyExistsException;
 import com.ulviglzd.weatherapi.externalApi.WeatherStackApiCall;
 import com.ulviglzd.weatherapi.helpers.formatters.DateAndTimeFormatter;
 import com.ulviglzd.weatherapi.repository.UserRepository;

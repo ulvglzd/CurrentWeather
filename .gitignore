@@ -3,6 +3,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+# Ignore env.properties file
+env.properties
 
 ### STS ###
 .apt_generated
@@ -32,4 +34,3 @@ build/
 ### VS Code ###
 .vscode/
 
-/application.properties

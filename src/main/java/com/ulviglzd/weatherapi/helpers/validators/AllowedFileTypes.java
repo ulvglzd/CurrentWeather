@@ -6,6 +6,8 @@ public class AllowedFileTypes {
     public static final String[] IMAGE_TYPES = {"image/png", "image/jpg", "image/jpeg"};
 
     public static boolean isImageAllowed(String contentType) {
-        return Arrays.stream(IMAGE_TYPES).toList().contains(contentType);
+        return Arrays.stream(IMAGE_TYPES)
+                .toList()
+                .contains(contentType);
     }
 }

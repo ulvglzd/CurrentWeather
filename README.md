@@ -34,6 +34,7 @@ This repository contains a REST API service that provides current weather data f
 - Spring Security 6.1.5
 - Spring Data JPA
 - Database (MySQL)
+- Maven
 - JWT (JSON Web Tokens)
 - Feign Client
 - Email Services (SMTP Gmail)

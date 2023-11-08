@@ -10,9 +10,7 @@ This repository contains a REST API service that provides current weather data f
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [Authentication](#authentication)
-- [Data Expiration](#data-expiration)
-- [Contributing](#contributing)
-- [License](#license)
+
 
 ## Features
 
@@ -79,6 +77,23 @@ MAIL_PASSWORD=your_app_password_given_by_gmail
 mvn clean install
 mvn spring-boot:run
 ```
+## Usage
+
+To use the Current Weather API, you should interact with the available endpoints. Detailed documentation on the API endpoints and how to use them can be found in the [API Endpoints](#api-endpoints) section.
+
+## API Endpoints
+
+Here are some of the main API endpoints you can use:
+
+- `POST /api/v1/auth/register`: Register a new user.
+- `POST /api/v1/auth/login`: Log in and receive a JWT token.
+- `POST /api/v1/account/upload`: Upload a profile image.
+- `GET /api/v1/current-weather/{city}`: Get current weather data for the specified city.
+
+
+## Authentication
+
+Authentication in this API is based on JSON Web Tokens (JWT). When users log in, they receive a token that should be included in the headers of subsequent API requests for authentication. You can adjust the expiration dates of both token and refresh token in `application.properties`.
 
 
 

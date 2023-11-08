@@ -79,7 +79,7 @@ mvn spring-boot:run
 ```
 ## Usage
 
-To use the Current Weather API, you should interact with the available endpoints. Detailed documentation on the API endpoints and how to use them can be found in the [API Endpoints](#api-endpoints) section.
+To use the Current Weather API, you should interact with the available endpoints. Documentation on the API endpoints and how to use them can be found in the [API Endpoints](#api-endpoints) section.
 
 ## API Endpoints
 
@@ -89,7 +89,9 @@ Here are some of the main API endpoints you can use:
 - `POST /api/v1/auth/login`: Log in and receive a JWT token.
 - `POST /api/v1/account/upload`: Upload a profile image.
 - `GET /api/v1/current-weather/{city}`: Get current weather data for the specified city.
-
+  
+You can find detailed documentation on how to use the API endpoints by visiting the Swagger documentation:
+[Swagger Documentation](http://localhost:8081/swagger-ui/index.html#/)
 
 ## Authentication
 

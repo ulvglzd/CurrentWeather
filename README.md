@@ -14,7 +14,7 @@ This repository contains a REST API service that provides current weather data f
 
 ## Features
 
-- User Registration and Login: Users can create an account and log in using their email and password. Authentication is handled using JWT tokens. There is a validation for credentials. 
+- User Registration and Login: Users can create an account and log in using their email and password. SSO is handled using JWT. There is a validation for credentials. 
 
 - Profile Image Upload: Users have the option to upload a profile image to personalize their accounts.
 
